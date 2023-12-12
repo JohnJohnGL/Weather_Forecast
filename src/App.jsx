@@ -4,7 +4,7 @@ import TopButtons from "./components/TopButtons";
 import Inputs from "./components/Inputs";
 import LocationAndTime from "./components/LocationAndTime";
 import WeatherInfo from "./components/WeatherInfo";
-import ThreeHourForecast from "./components/threeHourForecast";
+import ThreeHourForecast from "./components/ThreeHourForecast";
 import { useEffect, useState } from "react";
 import DailyForecast from "./components/DailyForecast";
 
