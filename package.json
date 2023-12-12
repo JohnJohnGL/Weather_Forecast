@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@coreui/coreui": "^4.3.2",
-    "@coreui/react": "^4.11.0",
     "@iconscout/react-unicons": "^2.0.2",
     "luxon": "^3.4.4",
     "react": "^18.2.0",
