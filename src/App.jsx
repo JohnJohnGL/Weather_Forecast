@@ -7,6 +7,7 @@ import WeatherInfo from "./components/WeatherInfo";
 import ThreeHourForecast from "./components/ThreeHourForecast";
 import { useEffect, useState } from "react";
 import DailyForecast from "./components/DailyForecast";
+import { RingLoader } from "react-spinners";
 
 function App() {
   const [units, setUnits] = useState("metric");
@@ -20,6 +21,16 @@ function App() {
   const [weatherIcon, setWeatherIcon] = useState(null);
   const [fullForecast, setFullForecast] = useState(null);
   const [dailyForecast, setDailyForecast] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const settingTime = () => {
     if (londonWeather) {
@@ -105,11 +116,22 @@ function App() {
 
     filterObjectsByTime();
   }, [fullForecast]);
-  console.log("3 HOUR FORECSAT", threeHourForecast);
+  console.log("3 HOUR FORECAST", threeHourForecast);
 
   return (
     <div className="mx-auto max-w-screen py-5 px-32 bg-gradient-to-br from-cyan-700 to-blue-700 h-fit shadow-xl shadow-gray-400">
-      {londonWeather && weatherIcon && threeHourForecast ? (
+      {initialLoading ? (
+        <div className="min-h-screen min-w-screen flex flex-col items-center justify-center">
+          <RingLoader
+            color="white"
+            loading={loading}
+            size={150}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+          <p className="text-white">Looking outside everyone's window...</p>
+        </div>
+      ) : (
         <div>
           <TopButtons setCountry={setCountry} />
           <Inputs setCountry={setCountry} setUnits={setUnits} />
@@ -131,21 +153,6 @@ function App() {
             dailyForecast={dailyForecast}
             londonWeather={londonWeather}
           />
-        </div>
-      ) : (
-        <div>
-          <div role="status" className="max-w-screen h-screen m-0 p-0">
-            <svg
-              aria-hidden="true"
-              class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-              viewBox="0 0 100 101"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* SVG path data */}
-            </svg>
-            <span class="sr-only">Loading...</span>
-          </div>
         </div>
       )}
     </div>
