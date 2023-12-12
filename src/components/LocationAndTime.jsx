@@ -1,3 +1,5 @@
+import React from "react";
+
 function LocationAndTime({
   londonWeather,
   utcTime,
@@ -6,15 +8,42 @@ function LocationAndTime({
 }) {
   const convertUnixToReadable = (UnixTime, timezone) => {
     const date = new Date((UnixTime + timezone) * 1000);
+
     const options = {
       weekday: "long",
       day: "numeric",
-      month: "long",
+      month: "numeric", // Use numeric format for month
       year: "numeric",
       hour: "numeric",
       minute: "numeric",
     };
-    return date.toLocaleString("en-US", options);
+
+    const formattedDate = date.toLocaleString("en-US", options);
+
+    // Manually format the date string
+    const [, weekday, day, month, year, time] = formattedDate.match(
+      /(\w+), (\d+)\/(\d+)\/(\d+), (.+)/
+    );
+    return `${weekday}, ${day} ${getMonthName(month)}, ${year} at ${time}`;
+  };
+
+  // Helper function to get month name
+  const getMonthName = (month) => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    return monthNames[parseInt(month, 10) - 1];
   };
 
   return (
