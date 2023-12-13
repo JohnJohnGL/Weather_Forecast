@@ -58,7 +58,7 @@ function ThreeHourForecast({ title, threeHourForecast, londonWeather }) {
                 <div key={index}>
                   {weather.icon && (
                     <img
-                      src={`http://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+                      src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
                       className="w-20 "
                     />
                   )}
