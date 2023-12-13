@@ -6,52 +6,40 @@ function LocationAndTime({
   setAdjustedTime,
   adjustedTime,
 }) {
-  const convertUnixToReadable = (UnixTime, timezone) => {
-    const date = new Date((UnixTime + timezone) * 1000);
-
+  function getTimeZoneName(offsetSeconds) {
+    const offsetMilliseconds = offsetSeconds * 1000;
+    const date = new Date();
     const options = {
       weekday: "long",
       day: "numeric",
-      month: "numeric", // Use numeric format for month
+      month: "long",
       year: "numeric",
       hour: "numeric",
       minute: "numeric",
     };
 
-    const formattedDate = date.toLocaleString("en-US", options);
+    const localTime = date.toLocaleString("en-US", options);
+    const localOffset = date.getTimezoneOffset() * 60 * 1000;
+    const utcTime = date.getTime() + localOffset;
 
-    // Manually format the date string
-    const [, weekday, day, month, year, time] = formattedDate.match(
-      /(\w+), (\d+)\/(\d+)\/(\d+), (.+)/
-    );
-    return `${weekday}, ${day} ${getMonthName(month)}, ${year} at ${time}`;
-  };
+    // Calculate the target time with the given offset
+    const targetTime = utcTime + offsetMilliseconds;
 
-  // Helper function to get month name
-  const getMonthName = (month) => {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    return monthNames[parseInt(month, 10) - 1];
-  };
+    // Create a new date object for the target time
+    const targetDate = new Date(targetTime);
+
+    // Get the time zone name of the target date
+    const timeZoneName = targetDate.toLocaleString("en-US", options);
+
+    return timeZoneName;
+  }
 
   return (
     <div>
       <div className="flex items-center justify-center my-6">
         {londonWeather && (
           <p className="text-white">
-            {convertUnixToReadable(londonWeather.dt, londonWeather.timezone)}
+            {getTimeZoneName(londonWeather.timezone)}
           </p>
         )}
       </div>
