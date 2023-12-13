@@ -1,13 +1,13 @@
-import "./App.css";
+// App.js
+import React, { useEffect, useState } from "react";
+import { RingLoader } from "react-spinners";
 import UilReact from "@iconscout/react-unicons/icons/uil-react";
 import TopButtons from "./components/TopButtons";
 import Inputs from "./components/Inputs";
 import LocationAndTime from "./components/LocationAndTime";
 import WeatherInfo from "./components/WeatherInfo";
 import ThreeHourForecast from "./components/ThreeHourForecast";
-import { useEffect, useState } from "react";
 import DailyForecast from "./components/DailyForecast";
-import { RingLoader } from "react-spinners";
 
 function App() {
   const [units, setUnits] = useState("metric");
@@ -23,6 +23,7 @@ function App() {
   const [dailyForecast, setDailyForecast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -44,11 +45,23 @@ function App() {
 
   useEffect(() => {
     const fetchCurrentWeather = async () => {
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=9b1100f339549fb4ca4266516c9d5265&units=${units}`
-      );
-      const data = await response.json();
-      setLondonWeather(data);
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${country}&appid=9b1100f339549fb4ca4266516c9d5265&units=${units}`
+        );
+
+        if (!response.ok) {
+          setError(response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setLondonWeather(data);
+        setError(null);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("NetworkError");
+      }
     };
 
     fetchCurrentWeather();
@@ -69,6 +82,12 @@ function App() {
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=9b1100f339549fb4ca4266516c9d5265&units=${units}`
       );
+
+      if (!response.ok) {
+        setError(response.status);
+        return;
+      }
+
       const data = await response.json();
 
       const slicedData = data.list.slice(1, 6);
@@ -96,12 +115,8 @@ function App() {
   useEffect(() => {
     function filterObjectsByTime() {
       if (fullForecast) {
-        // Filter objects based on the "dt_txt" property corresponding to 15:00:00
         const filteredObjects = fullForecast.list.filter((obj) => {
-          // Extract the time part from the "dt_txt" property
           const timePart = obj.dt_txt.split(" ")[1];
-
-          // Check if the time is 15:00:00
           return timePart === "15:00:00";
         });
 
@@ -129,6 +144,11 @@ function App() {
         <div>
           <TopButtons setCountry={setCountry} />
           <Inputs setCountry={setCountry} setUnits={setUnits} />
+          {error && (
+            <p className="text-red-500 text-lg mb-4 text-center">
+              Invalid city or country.
+            </p>
+          )}
           <LocationAndTime
             londonWeather={londonWeather}
             utcTime={utcTime}
