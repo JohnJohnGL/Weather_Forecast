@@ -70,7 +70,7 @@ function App() {
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=9b1100f339549fb4ca4266516c9d5265&units=${units}`
       );
       const data = await response.json();
-      console.log("DATA AFFF", data);
+
       const slicedData = data.list.slice(1, 6);
       setThreeHourForecast(slicedData);
       setFullForecast(data);
@@ -94,10 +94,6 @@ function App() {
   }, [londonWeather]);
 
   useEffect(() => {
-    console.log(fullForecast);
-  }, [fullForecast]);
-
-  useEffect(() => {
     function filterObjectsByTime() {
       if (fullForecast) {
         // Filter objects based on the "dt_txt" property corresponding to 15:00:00
@@ -109,14 +105,12 @@ function App() {
           return timePart === "15:00:00";
         });
 
-        // console.log("THE FILTERED MF OBJECTS", filteredObjects);
         setDailyForecast(filteredObjects);
       }
     }
 
     filterObjectsByTime();
   }, [fullForecast]);
-  console.log("3 HOUR FORECAST", threeHourForecast);
 
   return (
     <div className="mx-auto max-w-screen py-5 px-32 bg-gradient-to-br from-cyan-700 to-blue-700 h-fit shadow-xl shadow-gray-400">

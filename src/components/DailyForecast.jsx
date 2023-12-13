@@ -4,8 +4,6 @@ function DailyForecast({ title, dailyForecast, londonWeather }) {
   const [weatherIcon, setWeatherIcon] = useState(null);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
-  console.log("FROM OTHER COMPONENT", dailyForecast);
-
   const whatPng = () => {
     if (
       londonWeather &&
